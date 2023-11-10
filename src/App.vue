@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <ul class="header-button-left">
-      <li v-if="tab !== 0" @click="tab--">취소</li>
+      <li v-if="tab !== 0" @click="tab = 0">취소</li>
     </ul>
     <ul class="header-button-right">
       <li v-if="tab === 1" @click="tab++">다음</li>
@@ -13,14 +13,14 @@
   <PostContainer
     @write="content = $event"
     :tab="tab"
-    :data="data"
+    :data="posts"
     :imageUrl="imageUrl"
     :selectedFilter="selectedFilter"
   />
 
-  <button v-if="tab === 0" @click="more">더보기</button>
+  <button v-if="tab === 0" @click="more" class="more-button">더보기</button>
 
-  <div class="footer">
+  <div class="footer" v-if="tab === 0">
     <ul class="footer-button-plus">
       <input
         @change="upload"
@@ -36,8 +36,8 @@
 
 <script>
 import PostContainer from "./components/PostContainer.vue";
-import data from "./assets/data.js";
 import axios from "axios";
+import { mapMutations, mapState } from "vuex";
 
 export default {
   name: "App",
@@ -48,7 +48,6 @@ export default {
 
   data() {
     return {
-      data,
       count: 0,
       tab: 0,
       imageUrl: "",
@@ -63,13 +62,21 @@ export default {
     });
   },
 
+  computed: {
+    ...mapState(["posts", "lastId"]),
+  },
+
   methods: {
+    ...mapMutations(["addPost", "updateLastId"]),
+
     more() {
       axios
         .get(`https://codingapple1.github.io/vue/more${this.count}.json`)
         .then((res) => {
-          this.data.push(res.data);
+          res.data.id = this.lastId + 1;
+          this.updateLastId(res.data.id);
           this.count++;
+          this.posts.push(res.data);
         });
     },
 
@@ -85,16 +92,18 @@ export default {
 
     publish() {
       const post = {
+        id: this.lastId + 1,
         name: "강현지",
         userImage: "https://picsum.photos/100?random=3",
         postImage: this.imageUrl,
-        likes: 36,
+        likes: 0,
         date: "May 15",
         liked: false,
         content: this.content,
         filter: this.selectedFilter,
       };
-      this.data.unshift(post);
+      this.addPost(post);
+      this.updateLastId(post.id);
       this.tab = 0;
     },
   },
@@ -127,7 +136,7 @@ ul {
   top: 0;
 }
 .header-button-left {
-  color: skyblue;
+  color: #75a4ff;
   float: left;
   width: 50px;
   padding-left: 20px;
@@ -135,7 +144,7 @@ ul {
   margin-top: 10px;
 }
 .header-button-right {
-  color: skyblue;
+  color: #75a4ff;
   float: right;
   width: 50px;
   cursor: pointer;
@@ -177,5 +186,14 @@ ul {
   position: relative;
   border-right: 1px solid #eee;
   border-left: 1px solid #eee;
+}
+.more-button {
+  width: 100%;
+  height: 40px;
+  background-color: white;
+  border: 1px solid #a5a5a5;
+  cursor: pointer;
+  font-size: 14px;
+  color: grey;
 }
 </style>

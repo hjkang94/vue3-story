@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="tab === 0">
-      <PostDetail v-for="(item, i) in data" :data="item" :key="i" />
+      <PostDetail v-for="item in data" :data="item" :key="item.id" />
     </div>
 
     <div v-if="tab === 1">
@@ -33,7 +33,6 @@
           @input="$emit('write', $event.target.value)"
           class="write-box"
         >
-          write!
         </textarea>
       </div>
     </div>

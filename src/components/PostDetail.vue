@@ -1,18 +1,22 @@
 <template>
   <div class="post">
     <div class="post-header">
-      <div class="profile"></div>
+      <div
+        class="profile"
+        :style="{ backgroundImage: `url(${data.userImage})` }"
+      ></div>
       <span class="profile-name">{{ data.name }}</span>
     </div>
     <div
       class="post-body"
       :class="data.filter"
       :style="{ backgroundImage: `url(${data.postImage})` }"
+      @click="toggleLike(data.id)"
     ></div>
     <div class="post-content">
       <p>{{ data.likes }} Likes</p>
       <p>
-        <strong>{{ data.filter }}</strong> {{ data.content }}
+        <strong>{{ data.name }}</strong> {{ data.content }}
       </p>
       <p class="date">{{ data.date }}</p>
     </div>
@@ -20,11 +24,17 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
+
 export default {
   name: "PostDetail",
 
   props: {
-    data: Array,
+    data: Object,
+  },
+
+  methods: {
+    ...mapMutations(["toggleLike"]),
   },
 };
 </script>
