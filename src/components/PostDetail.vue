@@ -50,7 +50,6 @@ export default {
   width: 100%;
 }
 .profile {
-  background-image: url("https://picsum.photos/100?random=0");
   width: 30px;
   height: 30px;
   background-size: 100%;
@@ -69,7 +68,6 @@ export default {
   padding: 10px;
 }
 .post-body {
-  background-image: url("https://picsum.photos/600?random=0");
   height: 450px;
   background-position: center;
   background-size: cover;
