@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { useStore } from "vuex";
 
 export default {
   name: "PostDetail",
@@ -33,8 +33,14 @@ export default {
     data: Object,
   },
 
-  methods: {
-    ...mapMutations(["toggleLike"]),
+  setup() {
+    const store = useStore();
+
+    const toggleLike = (id) => {
+      store.commit("toggleLike", id);
+    };
+
+    return { toggleLike };
   },
 };
 </script>

@@ -16,6 +16,7 @@
           :filter="filter"
           :key="filter"
           :imageUrl="imageUrl"
+          @currentFilter="emit('currentFilter', $event)"
         >
           <span>{{ filter }}</span>
         </FilterBox>
@@ -29,10 +30,7 @@
         :style="{ backgroundImage: `url(${imageUrl})` }"
       ></div>
       <div class="write">
-        <textarea
-          @input="$emit('write', $event.target.value)"
-          class="write-box"
-        >
+        <textarea @input="emit('write', $event.target.value)" class="write-box">
         </textarea>
       </div>
     </div>
@@ -42,6 +40,7 @@
 <script>
 import PostDetail from "./PostDetail.vue";
 import FilterBox from "./FilterBox.vue";
+import { ref } from "vue";
 
 export default {
   name: "PostContainer",
@@ -58,37 +57,37 @@ export default {
     selectedFilter: String,
   },
 
-  data() {
-    return {
-      filters: [
-        "aden",
-        "_1977",
-        "brannan",
-        "brooklyn",
-        "clarendon",
-        "earlybird",
-        "gingham",
-        "hudson",
-        "inkwell",
-        "kelvin",
-        "lark",
-        "lofi",
-        "maven",
-        "mayfair",
-        "moon",
-        "nashville",
-        "perpetua",
-        "reyes",
-        "rise",
-        "slumber",
-        "stinson",
-        "toaster",
-        "valencia",
-        "walden",
-        "willow",
-        "xpro2",
-      ],
-    };
+  setup(props, { emit }) {
+    const filters = ref([
+      "aden",
+      "_1977",
+      "brannan",
+      "brooklyn",
+      "clarendon",
+      "earlybird",
+      "gingham",
+      "hudson",
+      "inkwell",
+      "kelvin",
+      "lark",
+      "lofi",
+      "maven",
+      "mayfair",
+      "moon",
+      "nashville",
+      "perpetua",
+      "reyes",
+      "rise",
+      "slumber",
+      "stinson",
+      "toaster",
+      "valencia",
+      "walden",
+      "willow",
+      "xpro2",
+    ]);
+
+    return { filters, emit };
   },
 };
 </script>

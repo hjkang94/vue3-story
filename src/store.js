@@ -39,7 +39,7 @@ const store = createStore({
         }
       ],
       lastId: 2,
-      more: {},
+      filter: '',
     }
   },
 
@@ -61,6 +61,10 @@ const store = createStore({
     updateLastId(state, lastId) {
       state.lastId = lastId;
     },
+
+    updateFilter(state, filter) {
+      state.filter = filter;
+    }
   },
 
   actions: {},

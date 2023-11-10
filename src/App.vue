@@ -16,6 +16,7 @@
     :data="posts"
     :imageUrl="imageUrl"
     :selectedFilter="selectedFilter"
+    @currentFilter="selectedFilter = $event"
   />
 
   <button v-if="tab === 0" @click="more" class="more-button">더보기</button>
@@ -37,7 +38,8 @@
 <script>
 import PostContainer from "./components/PostContainer.vue";
 import axios from "axios";
-import { mapMutations, mapState } from "vuex";
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
 
 export default {
   name: "App",
@@ -46,66 +48,78 @@ export default {
     PostContainer,
   },
 
-  data() {
-    return {
-      count: 0,
-      tab: 0,
-      imageUrl: "",
-      content: "",
-      selectedFilter: "",
+  setup() {
+    const store = useStore();
+
+    const count = ref(0);
+    const tab = ref(0);
+    const imageUrl = ref("");
+    const content = ref("");
+    const selectedFilter = ref("");
+
+    const posts = computed(() => store.state.posts);
+    const lastId = computed(() => store.state.lastId);
+
+    const addPost = (post) => {
+      store.commit("addPost", post);
     };
-  },
 
-  mounted() {
-    this.emitter.on("fire", (res) => {
-      this.selectedFilter = res;
-    });
-  },
+    const updateLastId = (id) => {
+      store.commit("updateLastId", id);
+    };
 
-  computed: {
-    ...mapState(["posts", "lastId"]),
-  },
-
-  methods: {
-    ...mapMutations(["addPost", "updateLastId"]),
-
-    more() {
+    const more = () => {
       axios
-        .get(`https://codingapple1.github.io/vue/more${this.count}.json`)
+        .get(`https://codingapple1.github.io/vue/more${count.value}.json`)
         .then((res) => {
-          res.data.id = this.lastId + 1;
-          this.updateLastId(res.data.id);
-          this.count++;
-          this.posts.push(res.data);
+          res.data.id = lastId.value + 1;
+          updateLastId(res.data.id);
+          count.value++;
+          posts.value.push(res.data);
         });
-    },
+    };
 
-    upload(event) {
+    const upload = (event) => {
       const files = event.target.files;
       const file = files[0];
       if (!file.type.includes("image")) {
         return alert("이미지 파일을 선택해주세요.");
       }
-      this.imageUrl = URL.createObjectURL(files[0]);
-      this.tab++;
-    },
+      imageUrl.value = URL.createObjectURL(files[0]);
+      tab.value++;
+    };
 
-    publish() {
+    const publish = () => {
       const post = {
-        id: this.lastId + 1,
+        id: lastId.value + 1,
         name: "강현지",
         userImage: "https://picsum.photos/100?random=3",
-        postImage: this.imageUrl,
+        postImage: imageUrl.value,
         likes: 0,
         date: "May 15",
         liked: false,
-        content: this.content,
-        filter: this.selectedFilter,
+        content: content.value,
+        filter: selectedFilter.value,
       };
-      this.addPost(post);
-      this.updateLastId(post.id);
-      this.tab = 0;
-    },
+      addPost(post);
+      updateLastId(post.id);
+      tab.value = 0;
+    };
+
+    return {
+      count,
+      tab,
+      imageUrl,
+      content,
+      selectedFilter,
+      posts,
+      lastId,
+      addPost,
+      updateLastId,
+      more,
+      upload,
+      publish,
+    };
   },
 };
 </script>

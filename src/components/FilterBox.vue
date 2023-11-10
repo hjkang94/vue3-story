@@ -3,7 +3,7 @@
     class="filter-item"
     :class="filter"
     :style="{ backgroundImage: `url(${imageUrl})` }"
-    @click="fire"
+    @click="$emit('currentFilter', filter)"
   >
     <slot></slot>
   </div>
@@ -16,12 +16,6 @@ export default {
   props: {
     imageUrl: String,
     filter: String,
-  },
-
-  methods: {
-    fire() {
-      this.emitter.emit("fire", this.filter);
-    },
   },
 };
 </script>
