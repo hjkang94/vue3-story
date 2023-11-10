@@ -6,6 +6,7 @@
     </div>
     <div
       class="post-body"
+      :class="data.filter"
       :style="{ backgroundImage: `url(${data.postImage})` }"
     ></div>
     <div class="post-content">

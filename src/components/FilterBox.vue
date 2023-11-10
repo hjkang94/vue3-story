@@ -3,7 +3,10 @@
     class="filter-item"
     :class="filter"
     :style="{ backgroundImage: `url(${imageUrl})` }"
-  ></div>
+    @click="fire"
+  >
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -13,6 +16,12 @@ export default {
   props: {
     imageUrl: String,
     filter: String,
+  },
+
+  methods: {
+    fire() {
+      this.emitter.emit("fire", this.filter);
+    },
   },
 };
 </script>

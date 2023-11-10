@@ -1,23 +1,24 @@
 <template>
   <div class="header">
     <ul class="header-button-left">
-      <li v-if="step !== 0" @click="step--">취소</li>
+      <li v-if="tab !== 0" @click="tab--">취소</li>
     </ul>
     <ul class="header-button-right">
-      <li v-if="step === 1" @click="step++">다음</li>
-      <li v-if="step === 2" @click="publish">발행</li>
+      <li v-if="tab === 1" @click="tab++">다음</li>
+      <li v-if="tab === 2" @click="publish">발행</li>
     </ul>
     <img src="./assets/logo.png" class="logo" />
   </div>
 
   <PostContainer
     @write="content = $event"
-    :step="step"
+    :tab="tab"
     :data="data"
     :imageUrl="imageUrl"
+    :selectedFilter="selectedFilter"
   />
 
-  <button v-if="step === 0" @click="more">더보기</button>
+  <button v-if="tab === 0" @click="more">더보기</button>
 
   <div class="footer">
     <ul class="footer-button-plus">
@@ -49,10 +50,17 @@ export default {
     return {
       data,
       count: 0,
-      step: 0,
+      tab: 0,
       imageUrl: "",
       content: "",
+      selectedFilter: "",
     };
+  },
+
+  mounted() {
+    this.emitter.on("fire", (res) => {
+      this.selectedFilter = res;
+    });
   },
 
   methods: {
@@ -72,7 +80,7 @@ export default {
         return alert("이미지 파일을 선택해주세요.");
       }
       this.imageUrl = URL.createObjectURL(files[0]);
-      this.step++;
+      this.tab++;
     },
 
     publish() {
@@ -84,10 +92,10 @@ export default {
         date: "May 15",
         liked: false,
         content: this.content,
-        filter: "perpetua",
+        filter: this.selectedFilter,
       };
       this.data.unshift(post);
-      this.step = 0;
+      this.tab = 0;
     },
   },
 };

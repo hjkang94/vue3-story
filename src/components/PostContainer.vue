@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div v-if="step === 0">
+    <div v-if="tab === 0">
       <PostDetail v-for="(item, i) in data" :data="item" :key="i" />
     </div>
 
-    <div v-if="step === 1">
+    <div v-if="tab === 1">
       <div
         class="upload-image"
+        :class="selectedFilter"
         :style="{ backgroundImage: `url(${imageUrl})` }"
       ></div>
       <div class="filters">
@@ -15,13 +16,16 @@
           :filter="filter"
           :key="filter"
           :imageUrl="imageUrl"
-        ></FilterBox>
+        >
+          <span>{{ filter }}</span>
+        </FilterBox>
       </div>
     </div>
 
-    <div v-if="step === 2">
+    <div v-if="tab === 2">
       <div
         class="upload-image"
+        :class="selectedFilter"
         :style="{ backgroundImage: `url(${imageUrl})` }"
       ></div>
       <div class="write">
@@ -50,8 +54,9 @@ export default {
 
   props: {
     data: Array,
-    step: Number,
+    tab: Number,
     imageUrl: String,
+    selectedFilter: String,
   },
 
   data() {
